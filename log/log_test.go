@@ -1,0 +1,10 @@
+package log
+
+import (
+	"testing"
+)
+
+func TestLog(t *testing.T) {
+	Debug("%v", "halo")
+
+}
