@@ -2,7 +2,6 @@ package util
 
 import (
 	"encoding/json"
-	"strings"
 )
 
 type Map map[string]interface{}
