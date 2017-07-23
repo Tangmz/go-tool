@@ -213,22 +213,22 @@ func TransType(val interface{}, descType reflect.Kind) (interface{}, error) {
 		res, _ := val.(string)
 		switch descType {
 		case reflect.Int:
-			res, _ := strconv.Atoi(res)
-			return res, nil
+			s_res, _ := strconv.Atoi(res)
+			return s_res, nil
 		case reflect.Int32:
-			res, _ := strconv.Atoi(res)
-			return int32(res), nil
+			s_res, _ := strconv.Atoi(res)
+			return int32(s_res), nil
 		case reflect.Int64:
-			res, _ := strconv.Atoi(res)
-			return int64(res), nil
+			s_res, _ := strconv.Atoi(res)
+			return int64(s_res), nil
 		case reflect.Float32:
-			res, _ := strconv.Atoi(res)
-			return float32(res), nil
+			s_res, _ := strconv.ParseFloat(res, 32)
+			return float32(s_res), nil
 		case reflect.Float64:
-			res, _ := strconv.Atoi(res)
-			return float64(res), nil
+			s_res, _ := strconv.ParseFloat(res, 64)
+			return float64(s_res), nil
 		case reflect.String:
-			return val, nil
+			return fmt.Sprintf("%v", res), nil
 		}
 	}
 	return nil, Error("invalid value type(%v)", typ)

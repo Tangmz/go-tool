@@ -67,6 +67,180 @@ func TestMap(t *testing.T) {
 		t.Error(m.Exist("halo"))
 	}
 
+	check(t, m)
+
+	m = Map{
+		"string": "string",
+		"int": "1",
+		"int32": "2",
+		"int64": "3",
+		"float32": "1.1",
+		"float64": "2.2",
+		"Map": Map{"key": "val"},
+	}
+
+	// int
+	if 1 != m.Int("int") {
+		t.Error(m.Int("int"))
+		return
+	}
+	if 2 != m.Int("int32") {
+		t.Error(m.Int("int32"))
+		return
+	}
+	if 3 != m.Int("int64") {
+		t.Error(m.Int("int64"))
+		return
+	}
+	if 0 != m.Int("float32") {
+		t.Error(m.Int("float32"))
+		return
+	}
+	if 0 != m.Int("float64") {
+		t.Error(m.Int("float64"))
+		return
+	}
+	if 0 != m.Int("string") {
+		t.Error(m.Int("string"))
+		return
+	}
+
+	// int32
+	if 1 != m.Int32("int") {
+		t.Error(m.Int32("int"))
+		return
+	}
+	if 2 != m.Int32("int32") {
+		t.Error(m.Int32("int32"))
+		return
+	}
+	if 3 != m.Int32("int64") {
+		t.Error(m.Int32("int64"))
+		return
+	}
+	if 0 != m.Int32("float32") {
+		t.Error(m.Int32("float32"))
+		return
+	}
+	if 0 != m.Int32("float64") {
+		t.Error(m.Int32("float64"))
+		return
+	}
+	if 0 != m.Int32("string") {
+		t.Error(m.Int32("string"))
+		return
+	}
+
+	// int64
+	if 1 != m.Int64("int") {
+		t.Error(m.Int64("int"))
+		return
+	}
+	if 2 != m.Int64("int32") {
+		t.Error(m.Int64("int32"))
+		return
+	}
+	if 3 != m.Int64("int64") {
+		t.Error(m.Int64("int64"))
+		return
+	}
+	if 0 != m.Int64("float32") {
+		t.Error(m.Int64("float32"))
+		return
+	}
+	if 0 != m.Int64("float64") {
+		t.Error(m.Int64("float64"))
+		return
+	}
+	if 0 != m.Int64("string") {
+		t.Error(m.Int64("string"))
+		return
+	}
+
+	// float32
+	if 1 != m.Float32("int") {
+		t.Error(m.Float32("int"))
+		return
+	}
+	if 2 != m.Float32("int32") {
+		t.Error(m.Float32("int32"))
+		return
+	}
+	if 3 != m.Float32("int64") {
+		t.Error(m.Float32("int64"))
+		return
+	}
+	if 1.1 != m.Float32("float32") {
+		t.Error(m.Float32("float32"))
+		return
+	}
+	if 2.2 != m.Float32("float64") {
+		t.Error(m.Float32("float64"))
+		return
+	}
+	if 0 != m.Float32("string") {
+		t.Error(m.Float32("string"))
+		return
+	}
+
+	// float64
+	if 1 != m.Float64("int") {
+		t.Error(m.Float64("int"))
+		return
+	}
+	if 2 != m.Float64("int32") {
+		t.Error(m.Float64("int32"))
+		return
+	}
+	if 3 != m.Float64("int64") {
+		t.Error(m.Float64("int64"))
+		return
+	}
+	//if math.Abs(float64(1.1 - m.Float64("float32"))) > 0.0001 {
+	//	t.Error(m.Float64("float32"))
+	//	return
+	//}
+	if 1.1 != m.Float64("float32") {
+		t.Error(m.Float32("float32"))
+		return
+	}
+	if 2.2 != m.Float64("float64") {
+		t.Error(m.Float64("float64"))
+		return
+	}
+	if 0 != m.Float64("string") {
+		t.Error(m.Float64("string"))
+		return
+	}
+
+	// string
+	if "1" != m.String("int") {
+		t.Error(m.String("int"))
+		return
+	}
+	if "2" != m.String("int32") {
+		t.Error(m.String("int32"))
+		return
+	}
+	if "3" != m.String("int64") {
+		t.Error(m.String("int64"))
+		return
+	}
+	if "1.1" != m.String("float32") {
+		t.Error(m.String("float32"))
+		return
+	}
+	if "2.2" != m.String("float64") {
+		t.Error(m.String("float64"))
+		return
+	}
+	if "string" != m.String("string") {
+		t.Error(m.String("string"))
+		return
+	}
+}
+
+func check(t *testing.T, m Map) {
 	// int
 	if 2 != m.Int("int32") {
 		t.Error(m.Int("int32"))
