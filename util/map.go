@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"reflect"
 )
 
 type Map map[string]interface{}
@@ -93,4 +94,18 @@ func S2Json(data interface{}) string {
 // Json2S trans json to object
 func Json2S(src string, dest interface{}) error {
 	return json.Unmarshal([]byte(src), dest)
+}
+
+func TransType(val interface{}) interface{} {
+	typ := reflect.TypeOf(val).Kind()
+	switch typ {
+	case reflect.Int:
+	case reflect.Int32:
+	case reflect.Int64:
+	case reflect.Float32:
+	case reflect.Float64:
+	case reflect.String:
+	case reflect.Array:
+	}
+	return typ
 }
