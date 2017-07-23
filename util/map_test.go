@@ -1,6 +1,9 @@
 package util
 
-import "testing"
+import (
+	"testing"
+	"math"
+)
 
 func TestMap(t *testing.T) {
 	m := Map{}
@@ -62,5 +65,137 @@ func TestMap(t *testing.T) {
 	}
 	if false != m.Exist("halo") {
 		t.Error(m.Exist("halo"))
+	}
+
+	// int
+	if 2 != m.Int("int32") {
+		t.Error(m.Int("int32"))
+		return
+	}
+	if 3 != m.Int("int64") {
+		t.Error(m.Int("int64"))
+		return
+	}
+	if 1 != m.Int("float32") {
+		t.Error(m.Int("float32"))
+		return
+	}
+	if 2 != m.Int("float64") {
+		t.Error(m.Int("float64"))
+		return
+	}
+	if 0 != m.Int("string") {
+		t.Error(m.Int("string"))
+		return
+	}
+
+	// int32
+	if 1 != m.Int32("int") {
+		t.Error(m.Int32("int"))
+		return
+	}
+	if 3 != m.Int32("int64") {
+		t.Error(m.Int32("int64"))
+		return
+	}
+	if 1 != m.Int32("float32") {
+		t.Error(m.Int32("float32"))
+		return
+	}
+	if 2 != m.Int32("float64") {
+		t.Error(m.Int32("float64"))
+		return
+	}
+	if 0 != m.Int32("string") {
+		t.Error(m.Int32("string"))
+		return
+	}
+
+	// int64
+	if 1 != m.Int64("int") {
+		t.Error(m.Int64("int"))
+		return
+	}
+	if 2 != m.Int64("int32") {
+		t.Error(m.Int64("int32"))
+		return
+	}
+	if 1 != m.Int64("float32") {
+		t.Error(m.Int64("float32"))
+		return
+	}
+	if 2 != m.Int64("float64") {
+		t.Error(m.Int64("float64"))
+		return
+	}
+	if 0 != m.Int64("string") {
+		t.Error(m.Int64("string"))
+		return
+	}
+
+	// float32
+	if 1 != m.Float32("int") {
+		t.Error(m.Float32("int"))
+		return
+	}
+	if 2 != m.Float32("int32") {
+		t.Error(m.Float32("int32"))
+		return
+	}
+	if 3 != m.Float32("int64") {
+		t.Error(m.Float32("int64"))
+		return
+	}
+	if 2.2 != m.Float32("float64") {
+		t.Error(m.Float32("float64"))
+		return
+	}
+	if 0 != m.Float32("string") {
+		t.Error(m.Float32("string"))
+		return
+	}
+
+	// float64
+	if 1 != m.Float64("int") {
+		t.Error(m.Float64("int"))
+		return
+	}
+	if 2 != m.Float64("int32") {
+		t.Error(m.Float64("int32"))
+		return
+	}
+	if 3 != m.Float64("int64") {
+		t.Error(m.Float64("int64"))
+		return
+	}
+	if math.Abs(float64(1.1 - m.Float64("float32"))) > 0.0001 {
+		t.Error(m.Float64("float32"))
+		return
+	}
+	if 0 != m.Float64("string") {
+		t.Error(m.Float64("string"))
+		return
+	}
+
+	// string
+	if "1" != m.String("int") {
+		t.Error(m.String("int"))
+		return
+	}
+	if "2" != m.String("int32") {
+		t.Error(m.String("int32"))
+		return
+	}
+	if "3" != m.String("int64") {
+		t.Error(m.String("int64"))
+		return
+	}
+	if "1.1" != m.String("float32") {
+		t.Error(m.String("float32"))
+		return
+	}
+	if "2.2" != m.String("float64") {
+		t.Error(m.String("float64"))
+		return
 	}
 }
