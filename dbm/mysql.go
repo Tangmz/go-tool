@@ -2,7 +2,7 @@ package dbm
 
 import (
 	"database/sql"
-	"github.com/go-tool/util"
+	"github.com/tangs-drm/go-tool/util"
 )
 
 type DB struct  {

@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/go-tool/util"
+	"github.com/tangs-drm/go-tool/util"
 	"strings"
 	"os"
 	"bufio"
