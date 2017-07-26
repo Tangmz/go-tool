@@ -54,7 +54,7 @@ func TestT(t *testing.T) {
 
 	conf.Print()
 
-	if len(conf.Map) != 6 {
+	if len(conf.Map) != 8 {
 		t.Error(len(conf.Map))
 		return
 	}
@@ -84,5 +84,13 @@ func TestT(t *testing.T) {
 		t.Error(conf.Float64("float64"))
 		return
 	}
-
+	if "judge" != conf.String("judge") {
+		t.Error(conf.String("judge"))
+		return
+	}
+	if "hey" != conf.String("val") {
+		t.Error(conf.String("val"))
+		return
+	}
+	fmt.Println("测试配置文件结束")
 }

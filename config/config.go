@@ -62,13 +62,22 @@ func (cf *Config) ParseFile(filename string) error {
 		}
 		line = strings.TrimSpace(line)
 
+		// 如果是空行,跳过
+		if len(line) < 1 {
+			continue
+		}
+
+		// 判断是否开头有注释符号
 		if strings.HasPrefix(line, CONFIG_COMMENT) {
 			continue
 		}
 
-		if len(line) < 1 {
-			continue
+		// 处理掉一行中的注释部分
+		index := strings.Index(line, CONFIG_COMMENT)
+		if index > -1 {
+			line = line[0:index]
 		}
+		line = strings.TrimSpace(line)
 
 		vals := strings.SplitN(line, CONFIG_EQUAL, 2)
 		if len(vals) < 1 {
