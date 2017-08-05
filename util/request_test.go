@@ -14,11 +14,17 @@ func HandleTestFunc(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(S2Json(msg)))
 }
 
+func HandleTestFuncString(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("string"))
+	fmt.Println("HandleTestFuncString come in")
+}
+
 func TestRequest(t *testing.T) {
 	fmt.Println("TestRequest测试开始")
 	// 启动server
 	go func() {
 		http.HandleFunc("/message", HandleTestFunc)
+		http.HandleFunc("/string", HandleTestFuncString)
 		http.ListenAndServe(":8900", nil)
 	}()
 
@@ -71,6 +77,40 @@ func TestRequest(t *testing.T) {
 	}
 	if resMap["msg"] != checkMap["msg"] {
 		t.Error(resMap["msg"])
+		return
+	}
+
+	// request for a string
+
+	resString, err = HTTPGetString("%v", "http://127.0.0.1:8900/string")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if resString != "string" {
+		t.Error(err)
+		return
+	}
+
+	resMap, err = HTTPGetMap("%v", "http://127.0.0.1:8900/string")
+	if err == nil {
+		t.Error(err)
+		return
+	}
+
+	resString, err = HTTPPostString("http://127.0.0.1:8900/string", "application/json", nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if resString != "string" {
+		t.Error(err)
+		return
+	}
+
+	resMap, err = HTTPPostMap("http://127.0.0.1:8900/string", "application/json", nil)
+	if err == nil {
+		t.Error(err)
 		return
 	}
 
