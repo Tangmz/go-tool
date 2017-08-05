@@ -7,6 +7,7 @@ import (
 	"fmt"
 )
 
+// Map
 type Map map[string]interface{}
 
 // Exist judge if the key exist in map
