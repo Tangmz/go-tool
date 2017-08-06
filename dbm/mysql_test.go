@@ -174,5 +174,4 @@ CREATE INDEX LASTTIME ON SESSION
 	}
 
 	log.Debug("TestMysql --- END")
-
 }

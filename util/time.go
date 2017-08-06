@@ -4,7 +4,7 @@ import "time"
 
 // Now返回一个13位的时间戳,即单位是毫秒
 func Now() int64 {
-	now := time.Now().UnixNano()/10e6
+	now := time.Now().UnixNano()/1e6
 	return now
 }
 
