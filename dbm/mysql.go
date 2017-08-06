@@ -3,6 +3,7 @@ package dbm
 import (
 	"database/sql"
 	"github.com/tangs-drm/go-tool/util"
+	"strings"
 )
 
 type DB struct  {
@@ -58,12 +59,20 @@ func (dm *DbManager) Register(name string, db *DB) {
 }
 
 // Db 根据name返回对应的数据库对象,name为空则返回默认的数据库对象
-func (dm *DbManager) Db(name... string) *DB {
+func (dm *DbManager) D(name... string) *DB {
 	if len(name) < 1 {
 		return dm.DbMap["default"]
 	}
 	nm := name[0]
 	return dm.DbMap[nm]
+}
+
+func D(name... string) *DB {
+	if len(name) < 1 {
+		return DefaultDBManger.DbMap["default"]
+	}
+	nm := name[0]
+	return DefaultDBManger.DbMap[nm]
 }
 
 // NewDBWithManager 新建数据库对象,并注册到指定的数据库管理者里
@@ -78,4 +87,23 @@ func NewDBWithManager(manager *DbManager, name string, url string) (*DB, error) 
 	var db_ = &DB{DB: db}
 	manager.Register(name, db_)
 	return db_, nil
+}
+
+// ExecScripts 处理了多条sql命令的执行
+// 参数1: 需要执行的sql语句
+// 参数2: 如果发生错误是否继续执行下去, false: 不继续执行, true: 继续执行
+func (db *DB) ExecScripts(scripts string, Continue bool) error {
+	commands := strings.Split(scripts, ";")
+	if len(commands) < 1 {
+		return util.Error("scripts get command empty")
+	}
+
+	for _, command := range commands {
+		command = strings.TrimSpace(command)
+		_, err := db.Exec(command)
+		if err != nil && !Continue {
+			return err
+		}
+	}
+	return nil
 }
