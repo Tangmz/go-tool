@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/tangs-drm/go-tool/util"
 	"strings"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type DB struct  {

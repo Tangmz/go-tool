@@ -2,7 +2,6 @@ package dbm
 
 import (
 	"testing"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/tangs-drm/go-tool/log"
 	"github.com/tangs-drm/go-tool/util"
 	"fmt"
