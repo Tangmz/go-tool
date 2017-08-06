@@ -20,6 +20,10 @@ func NewDB(name string, url string) (*DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
 	var db_ = &DB{DB: db}
 	DefaultDBManger.Register(name, db_)
 	return db_, nil
