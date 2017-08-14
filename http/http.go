@@ -74,7 +74,7 @@ func Filter(prefix string, filter FilterFunc) {
 }
 
 // FilterFunc 设置过滤器
-func (mux *Mux) FilterFunc(prefix string, must string, filter FilterFunc) {
+func (mux *Mux) FilterFunc(prefix string, filter FilterFunc) {
 	mux.Filter[prefix] = filter
 }
 
