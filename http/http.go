@@ -73,15 +73,15 @@ func Filter(prefix string, filter FilterFunc) {
 	DefaultHandle.Filter[prefix] = filter
 }
 
-// Filter设置过滤器
-func (mux *Mux) FilterFunc(prefix string, filter FilterFunc) {
+// FilterFunc 设置过滤器
+func (mux *Mux) FilterFunc(prefix string, must string, filter FilterFunc) {
 	mux.Filter[prefix] = filter
 }
 
 // deliverHandler 根据请求进来的路由找到对应的handler, 找不到则返回nil
 func (mux *Mux) deliverHandler(path string) http.Handler {
 	for key, handler := range mux.Handle {
-		if strings.HasPrefix(path, key) {
+		if path == key {
 			return handler
 		}
 	}
