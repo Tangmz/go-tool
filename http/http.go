@@ -13,12 +13,12 @@ const (
 // http请求 继续往下执行标记码
 const (
 	REQUEST_CONTINUE int = 0 // 请求操作继续执行
-	REQUEST_RETURN int = 1 // 请求操作停机执行
+	REQUEST_RETURN   int = 1 // 请求操作停机执行
 )
 
 type Mux struct {
 	Handle map[string]http.Handler // 请求路由
-	Filter map[string]FilterFunc // 过滤器
+	Filter map[string]FilterFunc   // 过滤器
 }
 
 // ServeHTTP 实现了http的ServeHTTP接口,以实现http的封装
@@ -45,8 +45,8 @@ func (mux *Mux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func NewServerMux() *Mux {
 	return &Mux{
-		Handle:map[string]http.Handler{},
-		Filter:map[string]FilterFunc{},
+		Handle: map[string]http.Handler{},
+		Filter: map[string]FilterFunc{},
 	}
 }
 
@@ -66,7 +66,7 @@ func (mux *Mux) HandleFunc(pre string, handler func(http.ResponseWriter, *http.R
 // FilterFunc 定义过滤器
 // 参数一:过滤时所需要的参数
 // 参数二:用于扩展所需的参数,或者或者返回值
-type FilterFunc func(http.ResponseWriter,*http.Request) int
+type FilterFunc func(http.ResponseWriter, *http.Request) int
 
 // Filter设置过滤器
 func Filter(prefix string, filter FilterFunc) {
