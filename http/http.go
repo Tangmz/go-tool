@@ -17,8 +17,8 @@ const (
 )
 
 type Mux struct {
-	Handle map[string]http.Handler // 请求路由
-	Filter map[string]FilterFunc // 过滤器
+	Handles map[string]http.Handler // 请求路由
+	Filter  map[string]FilterFunc   // 过滤器
 }
 
 // ServeHTTP 实现了http的ServeHTTP接口,以实现http的封装
@@ -45,7 +45,7 @@ func (mux *Mux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func NewServerMux() *Mux {
 	return &Mux{
-		Handle:map[string]http.Handler{},
+		Handles:map[string]http.Handler{},
 		Filter:map[string]FilterFunc{},
 	}
 }
@@ -55,12 +55,20 @@ var DefaultHandle = NewServerMux()
 
 // HandleFunc 设置路由和对应的处理handler
 func HandleFunc(pre string, handler func(http.ResponseWriter, *http.Request)) {
-	DefaultHandle.Handle[pre] = http.HandlerFunc(handler)
+	DefaultHandle.Handles[pre] = http.HandlerFunc(handler)
 }
 
 // HandleFunc 设置路由和对应的处理handler
 func (mux *Mux) HandleFunc(pre string, handler func(http.ResponseWriter, *http.Request)) {
-	mux.Handle[pre] = http.HandlerFunc(handler)
+	mux.Handles[pre] = http.HandlerFunc(handler)
+}
+
+func Handle(pre string, handler http.Handler) {
+	DefaultHandle.Handles[pre] = handler
+}
+
+func (mux *Mux) Handle(pre string, handler http.Handler) {
+	mux.Handle(pre, handler)
 }
 
 // FilterFunc 定义过滤器
@@ -80,7 +88,7 @@ func (mux *Mux) FilterFunc(prefix string, filter FilterFunc) {
 
 // deliverHandler 根据请求进来的路由找到对应的handler, 找不到则返回nil
 func (mux *Mux) deliverHandler(path string) http.Handler {
-	for key, handler := range mux.Handle {
+	for key, handler := range mux.Handles {
 		if strings.HasPrefix(path, key) {
 			return handler
 		}
@@ -96,4 +104,18 @@ func (mux *Mux) deliverFilter(path string) FilterFunc {
 		}
 	}
 	return nil
+}
+
+func ListenAndServe(addr string, handler http.Handler) error {
+	if handler == nil {
+		handler = DefaultHandle
+	}
+	return http.ListenAndServe(addr, handler)
+}
+
+func ListenAndServeTLS(addr, certFile, keyFile string, handler http.Handler) error {
+	if handler == nil {
+		handler = DefaultHandle
+	}
+	return http.ListenAndServeTLS(addr, certFile, keyFile, handler)
 }
