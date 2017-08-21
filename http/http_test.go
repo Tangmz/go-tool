@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"github.com/tangs-drm/go-tool/util"
 	"fmt"
+	"time"
+	"strings"
 )
 
 func HandleHalo(w http.ResponseWriter, r *http.Request) {
@@ -165,4 +167,48 @@ func TestHttp(t *testing.T) {
 	}
 
 	fmt.Println("TestHttp测试 Start")
+}
+
+func TestFileServer(t *testing.T) {
+	fmt.Println("TestFileServer 测试开始")
+	var err error
+	HandleFunc("/halo", HandleHalo)
+	Handle("/", http.FileServer(http.Dir(".")))
+	go func() {
+		err = ListenAndServe(":8901", nil)
+		if err != nil {
+			panic(err)
+		}
+	}()
+
+
+	time.Sleep(2*time.Second)
+
+	var resString string
+
+	// 检测访问文件,发送404
+	resString, err = util.HTTPGetString("%v/data/notfound.txt", "http://127.0.0.1:8901")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	fmt.Println(resString)
+
+	if !strings.Contains(resString, "not found") {
+		t.Error(resString)
+		return
+	}
+
+	// 检测访问文件,成功
+	resString, err = util.HTTPGetString("%v/data/test.txt", "http://127.0.0.1:8901")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	fmt.Println(resString)
+	if strings.Contains(resString, "not found") {
+		t.Error(resString)
+		return
+	}
+	fmt.Println("TestFileServer 测试完毕")
 }

@@ -18,7 +18,7 @@ const (
 
 type Mux struct {
 	Handles map[string]http.Handler // 请求路由
-	Filter  map[string]FilterFunc   // 过滤器
+	Filters map[string]FilterFunc   // 过滤器
 }
 
 // ServeHTTP 实现了http的ServeHTTP接口,以实现http的封装
@@ -46,7 +46,7 @@ func (mux *Mux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func NewServerMux() *Mux {
 	return &Mux{
 		Handles:map[string]http.Handler{},
-		Filter:map[string]FilterFunc{},
+		Filters:map[string]FilterFunc{},
 	}
 }
 
@@ -68,7 +68,7 @@ func Handle(pre string, handler http.Handler) {
 }
 
 func (mux *Mux) Handle(pre string, handler http.Handler) {
-	mux.Handles(pre, handler)
+	mux.Handles[pre] = handler
 }
 
 // FilterFunc 定义过滤器
@@ -78,27 +78,22 @@ type FilterFunc func(http.ResponseWriter, *http.Request) int
 
 // Filter设置过滤器
 func Filter(prefix string, filter FilterFunc) {
-	DefaultHandle.Filter[prefix] = filter
+	DefaultHandle.Filters[prefix] = filter
 }
 
 // FilterFunc 设置过滤器
 func (mux *Mux) FilterFunc(prefix string, filter FilterFunc) {
-	mux.Filter[prefix] = filter
+	mux.Filters[prefix] = filter
 }
 
 // deliverHandler 根据请求进来的路由找到对应的handler, 找不到则返回nil
 func (mux *Mux) deliverHandler(path string) http.Handler {
-	for key, handler := range mux.Handles {
-		if path == key {
-			return handler
-		}
-	}
-	return nil
+	return mux.matchHandler(path)
 }
 
 // deliverFilter 根据请求进来的路由找到对应的过滤器,找不到则返回nil
 func (mux *Mux) deliverFilter(path string) FilterFunc {
-	for key, filter := range mux.Filter {
+	for key, filter := range mux.Filters {
 		if strings.HasPrefix(path, key) {
 			return filter
 		}
@@ -118,4 +113,35 @@ func ListenAndServeTLS(addr, certFile, keyFile string, handler http.Handler) err
 		handler = DefaultHandle
 	}
 	return http.ListenAndServeTLS(addr, certFile, keyFile, handler)
+}
+
+// Does path match pattern?
+// copy from net/http/server.go
+func pathMatch(pattern, path string) bool {
+	if len(pattern) == 0 {
+		// should not happen
+		return false
+	}
+	n := len(pattern)
+	if pattern[n-1] != '/' {
+		return pattern == path
+	}
+	return len(path) >= n && path[0:n] == pattern
+}
+
+// Find a handler on a handler map given a path string
+// Most-specific (longest) pattern wins
+// copy from net/http/server.go and modify
+func (mux *Mux) matchHandler(path string) (h http.Handler) {
+	var n = 0
+	for k, v := range mux.Handles {
+		if !pathMatch(k, path) {
+			continue
+		}
+		if h == nil || len(k) > n {
+			n = len(k)
+			h = v
+		}
+	}
+	return
 }
