@@ -1,9 +1,9 @@
 package util
 
 import (
-	"testing"
-	"net/http"
 	"fmt"
+	"net/http"
+	"testing"
 )
 
 func HandleTestFunc(w http.ResponseWriter, r *http.Request) {
@@ -33,6 +33,7 @@ func TestRequest(t *testing.T) {
 	var checkString string
 	var checkMap Map
 	var err error
+	var headers = map[string]string{}
 	// 测试HTTPGetString
 	resString, err = HTTPGetString("%v", "http://127.0.0.1:8900/message")
 	if err != nil {
@@ -59,7 +60,10 @@ func TestRequest(t *testing.T) {
 	}
 
 	// 测试HTTPPostString
-	resString, err = HTTPPostString("http://127.0.0.1:8900/message", "text/html", nil)
+	headers = map[string]string{
+		"Content-Type": "text/html",
+	}
+	resString, err = HTTPPostString("http://127.0.0.1:8900/message", headers, nil)
 	if err != nil {
 		t.Error(err)
 		return
@@ -70,7 +74,10 @@ func TestRequest(t *testing.T) {
 	}
 
 	// 测试HTTPPostMap
-	resMap, err = HTTPPostMap("http://127.0.0.1:8900/message", "application/json", nil)
+	headers = map[string]string{
+		"Content-Type": "application/json",
+	}
+	resMap, err = HTTPPostMap("http://127.0.0.1:8900/message", headers, nil)
 	if err != nil {
 		t.Error(err)
 		return
@@ -98,7 +105,10 @@ func TestRequest(t *testing.T) {
 		return
 	}
 
-	resString, err = HTTPPostString("http://127.0.0.1:8900/string", "application/json", nil)
+	headers = map[string]string{
+		"Content-Type": "application/json",
+	}
+	resString, err = HTTPPostString("http://127.0.0.1:8900/string", headers, nil)
 	if err != nil {
 		t.Error(err)
 		return
@@ -108,7 +118,10 @@ func TestRequest(t *testing.T) {
 		return
 	}
 
-	resMap, err = HTTPPostMap("http://127.0.0.1:8900/string", "application/json", nil)
+	headers = map[string]string{
+		"Content-Type": "application/json",
+	}
+	resMap, err = HTTPPostMap("http://127.0.0.1:8900/string", headers, nil)
 	if err == nil {
 		t.Error(err)
 		return

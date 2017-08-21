@@ -13,7 +13,7 @@ const (
 // http请求 继续往下执行标记码
 const (
 	REQUEST_CONTINUE int = 0 // 请求操作继续执行
-	REQUEST_RETURN int = 1 // 请求操作停机执行
+	REQUEST_RETURN   int = 1 // 请求操作停机执行
 )
 
 type Mux struct {
@@ -74,14 +74,14 @@ func (mux *Mux) Handle(pre string, handler http.Handler) {
 // FilterFunc 定义过滤器
 // 参数一:过滤时所需要的参数
 // 参数二:用于扩展所需的参数,或者或者返回值
-type FilterFunc func(http.ResponseWriter,*http.Request) int
+type FilterFunc func(http.ResponseWriter, *http.Request) int
 
 // Filter设置过滤器
 func Filter(prefix string, filter FilterFunc) {
 	DefaultHandle.Filter[prefix] = filter
 }
 
-// Filter设置过滤器
+// FilterFunc 设置过滤器
 func (mux *Mux) FilterFunc(prefix string, filter FilterFunc) {
 	mux.Filter[prefix] = filter
 }
@@ -89,7 +89,7 @@ func (mux *Mux) FilterFunc(prefix string, filter FilterFunc) {
 // deliverHandler 根据请求进来的路由找到对应的handler, 找不到则返回nil
 func (mux *Mux) deliverHandler(path string) http.Handler {
 	for key, handler := range mux.Handles {
-		if strings.HasPrefix(path, key) {
+		if path == key {
 			return handler
 		}
 	}
