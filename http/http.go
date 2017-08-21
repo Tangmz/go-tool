@@ -68,7 +68,7 @@ func Handle(pre string, handler http.Handler) {
 }
 
 func (mux *Mux) Handle(pre string, handler http.Handler) {
-	mux.Handle(pre, handler)
+	mux.Handles(pre, handler)
 }
 
 // FilterFunc 定义过滤器
