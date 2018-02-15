@@ -1,12 +1,12 @@
 package http
 
 import (
-	"testing"
-	"net/http"
-	"github.com/tangs-drm/go-tool/util"
 	"fmt"
-	"time"
+	"github.com/tangs-drm/go-tool/util"
+	"net/http"
 	"strings"
+	"testing"
+	"time"
 )
 
 func HandleHalo(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +30,11 @@ func TestHttp(t *testing.T) {
 		// 定义路由
 		mux.HandleFunc("/halo", HandleHalo)
 		mux.HandleFunc("/string", HandleString)
-		http.ListenAndServe(":8901", mux)
+		var err = http.ListenAndServe(":8901", mux)
+		if err != nil {
+			t.Error(err)
+			panic(err)
+		}
 	}()
 
 	var resMap util.Map
@@ -72,17 +76,17 @@ func TestHttp(t *testing.T) {
 	}
 
 	// 添加过滤器
-	var argFilter FilterFunc = func(w http.ResponseWriter, r *http.Request) int {
+	var argFilter FilterFunc = func(w http.ResponseWriter, r *http.Request) bool {
 		var filter string
 		filter = r.FormValue("filter")
 		fmt.Printf("filter -- %v|\n", filter)
 		if filter != "halo" {
 			w.Write([]byte("invalid"))
-			return 1
+			return REQUEST_CONTINUE
 		}
-		return 0
+		return REQUEST_RETURN
 	}
-	mux.FilterFunc("/usr/api",  argFilter)
+	mux.FilterFunc("/usr/api", argFilter)
 
 	// 添加过滤器,访问其他路由
 	resString, err = util.HTTPGetString("%v", "http://127.0.0.1:8901/string")
@@ -144,7 +148,7 @@ func TestHttp(t *testing.T) {
 	}
 
 	// 添加路由, 通过路由获取map
-	var pubFilter FilterFunc = func(w http.ResponseWriter, r *http.Request) int {
+	var pubFilter FilterFunc = func(w http.ResponseWriter, r *http.Request) bool {
 		if r.URL.Path != "/pub/api/map" {
 			return REQUEST_RETURN
 		}
@@ -175,14 +179,14 @@ func TestFileServer(t *testing.T) {
 	HandleFunc("/halo", HandleHalo)
 	Handle("/", http.FileServer(http.Dir(".")))
 	go func() {
-		err = ListenAndServe(":8901", nil)
+		err = http.ListenAndServe(":8902", nil)
 		if err != nil {
+			t.Error(err)
 			panic(err)
 		}
 	}()
 
-
-	time.Sleep(2*time.Second)
+	time.Sleep(2 * time.Second)
 
 	var resString string
 

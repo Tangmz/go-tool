@@ -11,8 +11,8 @@ const (
 )
 
 const (
-	REQUEST_CONTINUE int = 0 // 过滤器操作后继续执行
-	REQUEST_RETURN   int = 1 // 过滤器操作后停机执行
+	REQUEST_CONTINUE bool = false // 过滤器操作后继续执行
+	REQUEST_RETURN   bool = true  // 过滤器操作后停止执行
 )
 
 type Mux struct {
@@ -29,10 +29,8 @@ func (mux *Mux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// 获取过滤器,如果有则执行
 	filter := mux.deliverFilter(path)
-	var filterCode int
 	if filter != nil {
-		filterCode = filter(w, r)
-		if REQUEST_RETURN == filterCode {
+		if !filter(w, r) {
 			return
 		}
 	}
@@ -79,7 +77,7 @@ func (mux *Mux) Handle(pre string, handler http.Handler) {
 // FilterFunc 定义过滤器
 // 参数一:过滤时所需要的参数
 // 参数二:用于扩展所需的参数,或者或者返回值
-type FilterFunc func(http.ResponseWriter, *http.Request) int
+type FilterFunc func(http.ResponseWriter, *http.Request) bool
 
 // Filter设置过滤器
 func Filter(prefix string, filter FilterFunc) {
