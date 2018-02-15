@@ -5,6 +5,6 @@ import (
 	"fmt"
 )
 
-func Error(format string, args... interface{}) error {
+func Error(format string, args ...interface{}) error {
 	return errors.New(fmt.Sprintf(format, args...))
 }

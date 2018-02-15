@@ -10,43 +10,48 @@ const (
 	FILTER_ERROR = 1000
 )
 
-// http请求 继续往下执行标记码
 const (
-	REQUEST_CONTINUE int = 0 // 请求操作继续执行
-	REQUEST_RETURN   int = 1 // 请求操作停机执行
+	REQUEST_CONTINUE int = 0 // 过滤器操作后继续执行
+	REQUEST_RETURN   int = 1 // 过滤器操作后停机执行
 )
 
 type Mux struct {
 	Handles map[string]http.Handler // 请求路由
 	Filters map[string]FilterFunc   // 过滤器
+
+	Request        *Request
+	ResponseWriter ResponseWriter
 }
 
 // ServeHTTP 实现了http的ServeHTTP接口,以实现http的封装
 func (mux *Mux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
+
+	// 获取过滤器,如果有则执行
+	filter := mux.deliverFilter(path)
+	var filterCode int
+	if filter != nil {
+		filterCode = filter(w, r)
+		if REQUEST_RETURN == filterCode {
+			return
+		}
+	}
+
 	// 根据请求的路由获取执行的handler
 	handler := mux.deliverHandler(path)
 	if handler == nil {
 		http.NotFound(w, r)
 		return
 	}
-	// 获取过滤器,如果有则执行
-	filter := mux.deliverFilter(path)
-	var filter_code int
-	if filter != nil {
-		filter_code = filter(w, r)
-		if REQUEST_RETURN == filter_code {
-			return
-		}
-	}
+
 	// 执行handler
 	handler.ServeHTTP(w, r)
 }
 
 func NewServerMux() *Mux {
 	return &Mux{
-		Handles:map[string]http.Handler{},
-		Filters:map[string]FilterFunc{},
+		Handles: map[string]http.Handler{},
+		Filters: map[string]FilterFunc{},
 	}
 }
 
@@ -99,20 +104,6 @@ func (mux *Mux) deliverFilter(path string) FilterFunc {
 		}
 	}
 	return nil
-}
-
-func ListenAndServe(addr string, handler http.Handler) error {
-	if handler == nil {
-		handler = DefaultHandle
-	}
-	return http.ListenAndServe(addr, handler)
-}
-
-func ListenAndServeTLS(addr, certFile, keyFile string, handler http.Handler) error {
-	if handler == nil {
-		handler = DefaultHandle
-	}
-	return http.ListenAndServeTLS(addr, certFile, keyFile, handler)
 }
 
 // Does path match pattern?
