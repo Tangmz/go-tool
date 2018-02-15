@@ -1,8 +1,8 @@
 package util
 
 import (
-	"testing"
 	"math"
+	"testing"
 )
 
 func TestMap(t *testing.T) {
@@ -19,13 +19,13 @@ func TestMap(t *testing.T) {
 
 	// 检查值
 	m = Map{
-		"string": "string",
-		"int": 1,
-		"int32": int32(2),
-		"int64": int64(3),
+		"string":  "string",
+		"int":     1,
+		"int32":   int32(2),
+		"int64":   int64(3),
 		"float32": float32(1.1),
 		"float64": float64(2.2),
-		"Map": Map{"key": "val"},
+		"Map":     Map{"key": "val"},
 	}
 	if "string" != m.String("string") {
 		t.Error(m.String("string"))
@@ -70,13 +70,13 @@ func TestMap(t *testing.T) {
 	check(t, m)
 
 	m = Map{
-		"string": "string",
-		"int": "1",
-		"int32": "2",
-		"int64": "3",
+		"string":  "string",
+		"int":     "1",
+		"int32":   "2",
+		"int64":   "3",
 		"float32": "1.1",
 		"float64": "2.2",
-		"Map": Map{"key": "val"},
+		"Map":     Map{"key": "val"},
 	}
 
 	// int
@@ -238,6 +238,34 @@ func TestMap(t *testing.T) {
 		t.Error(m.String("string"))
 		return
 	}
+
+	// check map
+	m = Map{
+		"a": Map{
+			"1": 2,
+		},
+		"b": Map{
+			"2": "2",
+		},
+	}
+	a := m.Map("a")
+	if a == nil {
+		t.Error(nil)
+		return
+	}
+	if 2 != a.Int("1") {
+		t.Error(a.Int("1"))
+		return
+	}
+	b := m.Map("b")
+	if b == nil {
+		t.Error(nil)
+		return
+	}
+	if "2" != b.String("2") {
+		t.Error(b.String("2"))
+		return
+	}
 }
 
 func check(t *testing.T, m Map) {
@@ -342,7 +370,7 @@ func check(t *testing.T, m Map) {
 		t.Error(m.Float64("int64"))
 		return
 	}
-	if math.Abs(float64(1.1 - m.Float64("float32"))) > 0.0001 {
+	if math.Abs(float64(1.1-m.Float64("float32"))) > 0.0001 {
 		t.Error(m.Float64("float32"))
 		return
 	}

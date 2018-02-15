@@ -2,9 +2,9 @@ package util
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strconv"
-	"fmt"
 )
 
 // Map
@@ -107,10 +107,12 @@ func (m Map) Float64(key string) float64 {
 func (m Map) Map(key string) Map {
 	var val Map
 	var ok bool
-	if val, ok = m[key].(Map); !ok {
-		return nil
+	if val, ok = m[key].(Map); ok {
+		return val
+	} else if val, ok = m[key].(map[string]interface{}); ok {
+		return Map(val)
 	}
-	return val
+	return nil
 }
 
 // S2Json trans data to json, e.g struct, map and so on.
