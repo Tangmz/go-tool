@@ -2,15 +2,17 @@ package util
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
+	"w.gdy.io/dyf/transcode/util"
 )
 
 // Map
 type Map map[string]interface{}
 
-// Exist judge if the key exist in map
+// Exist judge if the key exist in map.
 func (m Map) Exist(key string) bool {
 	if _, ok := m[key]; !ok {
 		return false
@@ -18,7 +20,7 @@ func (m Map) Exist(key string) bool {
 	return true
 }
 
-// String return the value type string by key
+// String return the value type string by key.
 func (m Map) String(key string) string {
 	var val string
 	var ok bool
@@ -33,7 +35,7 @@ func (m Map) String(key string) string {
 	return val
 }
 
-// Int return the value type int by key
+// Int return the value type int by key.
 func (m Map) Int(key string) int {
 	var val int
 	var ok bool
@@ -47,7 +49,7 @@ func (m Map) Int(key string) int {
 	return val
 }
 
-// Int return the value type int32 by key
+// Int return the value type int32 by key.
 func (m Map) Int32(key string) int32 {
 	var val int32
 	var ok bool
@@ -61,7 +63,7 @@ func (m Map) Int32(key string) int32 {
 	return val
 }
 
-// Int return the value type int64 by key
+// Int return the value type int64 by key.
 func (m Map) Int64(key string) int64 {
 	var val int64
 	var ok bool
@@ -75,7 +77,7 @@ func (m Map) Int64(key string) int64 {
 	return val
 }
 
-// Int return the value type float32 by key
+// Int return the value type float32 by key.
 func (m Map) Float32(key string) float32 {
 	var val float32
 	var ok bool
@@ -89,7 +91,7 @@ func (m Map) Float32(key string) float32 {
 	return val
 }
 
-// Int return the value type float32 by key
+// Int return the value type float32 by key.
 func (m Map) Float64(key string) float64 {
 	var val float64
 	var ok bool
@@ -103,7 +105,7 @@ func (m Map) Float64(key string) float64 {
 	return val
 }
 
-// Int return the value type Map by key
+// Int return the value type Map by key.
 func (m Map) Map(key string) Map {
 	var val Map
 	var ok bool
@@ -113,6 +115,21 @@ func (m Map) Map(key string) Map {
 		return Map(val)
 	}
 	return nil
+}
+
+// AryMap return the array Map by key.
+func (m Map) AryMap(key string) []Map {
+	var vals []Map
+	var ok bool
+	if _, ok = m[key]; !ok {
+		return []Map{}
+	}
+	if vals, ok = m[key].([]Map); ok {
+		return vals
+	}
+
+	Json2S(util.S2Json(m[key]), &vals)
+	return vals
 }
 
 // S2Json trans data to json, e.g struct, map and so on.
@@ -128,7 +145,7 @@ func Json2S(src string, dest interface{}) error {
 
 func TransType(val interface{}, descType reflect.Kind) (interface{}, error) {
 	if val == nil {
-		return nil, Error("val is nil")
+		return nil, errors.New("val is nil")
 	}
 	typ := reflect.TypeOf(val).Kind()
 	switch typ {
@@ -234,5 +251,5 @@ func TransType(val interface{}, descType reflect.Kind) (interface{}, error) {
 			return fmt.Sprintf("%v", res), nil
 		}
 	}
-	return nil, Error("invalid value type(%v)", typ)
+	return nil, errors.New(fmt.Sprintf("invalid value type(%v)", typ))
 }

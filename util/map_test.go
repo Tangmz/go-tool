@@ -1,8 +1,10 @@
 package util
 
 import (
+	"fmt"
 	"math"
 	"testing"
+	"w.gdy.io/dyf/transcode/util"
 )
 
 func TestMap(t *testing.T) {
@@ -266,6 +268,7 @@ func TestMap(t *testing.T) {
 		t.Error(b.String("2"))
 		return
 	}
+	fmt.Println("TestMap test success")
 }
 
 func check(t *testing.T, m Map) {
@@ -398,6 +401,40 @@ func check(t *testing.T, m Map) {
 	}
 	if "2.2" != m.String("float64") {
 		t.Error(m.String("float64"))
+		return
+	}
+}
+
+func TestAry(t *testing.T) {
+	var data = Map{
+		"aryMap": []Map{
+			{"a": "b"},
+		},
+	}
+	var vals = data.AryMap("aryMap")
+	if len(vals) != 1 {
+		t.Error(len(vals))
+		return
+	}
+	if vals[0].String("a") != "b" {
+		t.Error(vals[0])
+		return
+	}
+
+	//
+	var str = util.S2Json(data)
+	var err = Json2S(str, &data)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if len(vals) != 1 {
+		t.Error(len(vals))
+		return
+	}
+	if vals[0].String("a") != "b" {
+		t.Error(vals[0])
 		return
 	}
 }
