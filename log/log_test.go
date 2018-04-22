@@ -1,8 +1,8 @@
 package log
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func slog() {
@@ -12,15 +12,15 @@ func slog() {
 }
 
 func TestLog(t *testing.T) {
-	Debug("%v", "Debug")
-	Info("%v", "Info")
-	Warning("%v", "Warning")
-	Error("%v", "Error")
+	D("%v", "Debug")
+	I("%v", "Info")
+	W("%v", "Warning")
+	E("%v", "NewError")
 
-	logger.Debug("logger %v", "Debug")
-	logger.Info("logger %v", "Info")
-	logger.Warning("logger %v", "Warning")
-	logger.Error("logger %v", "Error")
+	logger.D("logger %v", "Debug")
+	logger.I("logger %v", "Info")
+	logger.W("logger %v", "Warning")
+	logger.E("logger %v", "Error")
 
 	LogD_(-2, "-2 %v", "Debug")
 	LogD_(-1, "-1 %v", "Debug")

@@ -1,4 +1,4 @@
-package dbm
+package database
 
 import (
 	"testing"

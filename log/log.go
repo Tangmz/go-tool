@@ -1,14 +1,10 @@
-/*
-	log 包,日志等级分为四个等级,DEBUG, INFO, WARNING, ERROR, 和通常的日志包套路一样,日志打印可以设置等级
-	低于设置等级的日志会被过滤.
-*/
 package log
 
 import (
-	"log"
-	"os"
 	"fmt"
 	"io"
+	"log"
+	"os"
 	"path/filepath"
 )
 
@@ -16,11 +12,11 @@ type logLevel int
 
 type Logger struct {
 	Level logLevel
-	Log *log.Logger
+	Log   *log.Logger
 }
 
 const (
-	DEBUG logLevel = iota
+	DEBUG   logLevel = iota
 	INFO             = 2
 	WARNING          = 3
 	ERROR            = 4
@@ -32,7 +28,7 @@ var logger = NewLogger()
 // NewLogger返回一个新log对象
 func NewLogger() *Logger {
 	return &Logger{
-		Log: log.New(os.Stdout, "",  log.LstdFlags|log.Lshortfile),
+		Log: log.New(os.Stdout, "", log.LstdFlags|log.Lmicroseconds|log.Lshortfile),
 	}
 }
 
@@ -54,7 +50,7 @@ func RedirectFile(file string) error {
 	if err != nil {
 		return err
 	}
-	f, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE|os.O_APPEND|os.O_SYNC, 0755)
+	f, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE|os.O_APPEND|os.O_SYNC, 0666)
 	if err != nil {
 		return err
 	}
@@ -62,71 +58,70 @@ func RedirectFile(file string) error {
 	return nil
 }
 
-// Debug 信息
-func Debug(format string, args... interface{}) {
+// Debug message
+func D(format string, args ...interface{}) {
 	if DEBUG < logger.Level {
 		return
 	}
-	logger.Log.Output(2,  fmt.Sprintf("[D] " + format, args...))
+	logger.Log.Output(2, fmt.Sprintf("[D] "+format, args...))
 }
 
-// Info 信息
-func Info(format string, args... interface{})  {
+// Info message
+func I(format string, args ...interface{}) {
 	if INFO < logger.Level {
 		return
 	}
-	logger.Log.Output(2, fmt.Sprintf("[I] " + format, args...))
+	logger.Log.Output(2, fmt.Sprintf("[I] "+format, args...))
 }
 
-// Warning 信息
-func Warning(format string, args... interface{})  {
+// Warning message
+func W(format string, args ...interface{}) {
 	if WARNING < logger.Level {
 		return
 	}
-	logger.Log.Output(2, fmt.Sprintf("[W] " + format, args...))
+	logger.Log.Output(2, fmt.Sprintf("[W] "+format, args...))
 }
 
-// Error 信息
-func Error(format string, args... interface{})  {
+// Error message
+func E(format string, args ...interface{}) {
 	if ERROR < logger.Level {
 		return
 	}
-	logger.Log.Output(2, fmt.Sprintf("[E] " + format, args...))
+	logger.Log.Output(2, fmt.Sprintf("[E] "+format, args...))
 }
 
-// Debug 信息
-func (l *Logger) Debug(format string, args... interface{}) {
+// Debug message
+func (l *Logger) D(format string, args ...interface{}) {
 	if DEBUG < logger.Level {
 		return
 	}
-	logger.Log.Output(2,  fmt.Sprintf("[D] " + format, args...))
+	logger.Log.Output(2, fmt.Sprintf("[D] "+format, args...))
 }
 
-// Info 信息
-func (l *Logger) Info(format string, args... interface{})  {
+// Info message
+func (l *Logger) I(format string, args ...interface{}) {
 	if INFO < logger.Level {
 		return
 	}
-	logger.Log.Output(2, fmt.Sprintf("[I] " + format, args...))
+	logger.Log.Output(2, fmt.Sprintf("[I] "+format, args...))
 }
 
-// Warning 信息
-func (l *Logger) Warning(format string, args... interface{})  {
+// Warning message
+func (l *Logger) W(format string, args ...interface{}) {
 	if WARNING < logger.Level {
 		return
 	}
-	logger.Log.Output(2, fmt.Sprintf("[W] " + format, args...))
+	logger.Log.Output(2, fmt.Sprintf("[W] "+format, args...))
 }
 
-// Error 信息
-func (l *Logger) Error(format string, args... interface{})  {
+// Error message
+func (l *Logger) E(format string, args ...interface{}) {
 	if ERROR < logger.Level {
 		return
 	}
-	logger.Log.Output(2, fmt.Sprintf("[E] " + format, args...))
+	logger.Log.Output(2, fmt.Sprintf("[E] "+format, args...))
 }
 
-// 自定义callpath的 Debug信息,常用于测试
-func LogD_(callpath int, format string, args... interface{}) {
-	logger.Log.Output(callpath, fmt.Sprintf("[D] " + format, args...))
+func LogD_(callpath int, format string, args ...interface{}) {
+	logger.Log.Output(callpath, fmt.Sprintf("[D] "+format, args...))
 }
