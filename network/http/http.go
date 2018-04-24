@@ -1,6 +1,9 @@
 package http
 
-import "net/http"
+import (
+	"log"
+	"net/http"
+)
 
 type ServeMux struct {
 	m    map[string]muxEntry
@@ -53,4 +56,14 @@ func HandleFunc(pattern string, handler func(w http.ResponseWriter, r *http.Requ
 
 func (mux *ServeMux) HandleFunc(pattern string, handler func(w http.ResponseWriter, r *http.Request)) {
 	mux.Handle(pattern, http.HandlerFunc(handler))
+}
+
+func (mux ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Printf("http: ServeHTTP panic: %v\r\n", err)
+		}
+	}()
+
+	//var path = r.URL.Path
 }
