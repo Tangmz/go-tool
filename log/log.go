@@ -11,8 +11,9 @@ import (
 type logLevel int
 
 type Logger struct {
-	Level logLevel
-	Log   *log.Logger
+	Level           logLevel
+	Log             *log.Logger
+	CutFileWithDate bool
 }
 
 const (
@@ -48,7 +49,9 @@ func RedirectFile(file string) error {
 	fp := filepath.Dir(file)
 	err = os.MkdirAll(fp, os.ModePerm)
 	if err != nil {
-		return err
+		if !os.IsExist(err) {
+			return err
+		}
 	}
 	f, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE|os.O_APPEND|os.O_SYNC, 0666)
 	if err != nil {
