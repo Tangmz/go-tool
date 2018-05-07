@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
-	"w.gdy.io/dyf/transcode/util"
 )
 
 // Map
@@ -128,7 +127,7 @@ func (m Map) AryMap(key string) []Map {
 		return vals
 	}
 
-	Json2S(util.S2Json(m[key]), &vals)
+	Json2S(S2Json(m[key]), &vals)
 	return vals
 }
 

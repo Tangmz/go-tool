@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math"
 	"testing"
-	"w.gdy.io/dyf/transcode/util"
 )
 
 func TestMap(t *testing.T) {
@@ -422,7 +421,7 @@ func TestAry(t *testing.T) {
 	}
 
 	//
-	var str = util.S2Json(data)
+	var str = S2Json(data)
 	var err = Json2S(str, &data)
 	if err != nil {
 		t.Error(err)
