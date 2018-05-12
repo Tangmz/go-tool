@@ -1,8 +1,8 @@
 package email
 
 import (
-	"github.com/Centny/gwf/log"
 	"testing"
+	"log"
 )
 
 func TestSendEmail(t *testing.T) {
@@ -29,5 +29,5 @@ func TestSendEmail(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	log.D("TestSendEmail test success")
+	log.Println("TestSendEmail test success")
 }
